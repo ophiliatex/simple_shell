@@ -1,1 +1,4 @@
 /.clang-format
+/cmake-build-debug/
+/CMakeLists.txt
+/hsh
