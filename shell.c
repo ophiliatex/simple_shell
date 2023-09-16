@@ -112,5 +112,9 @@ void shell_loop(shell_info_t *info)
 		{
 			continue;
 		}
+
+		parse_line(info);
+
+		execute_command(info);
 	}
 }
