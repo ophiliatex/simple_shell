@@ -9,22 +9,16 @@
 void trim(char *str)
 {
 	int start = 0;
-	int end = (int) strlen(str) - 1;
+	int end = (int) strlen_(str) - 1;
 
-	while (isspace(str[start]))
-	{
+	while (isspace_(str[start]))
 		start++;
-	}
 
-	while (end >= start && (isspace(str[end]) || str[end] == '\n'))
-	{
+	while (end >= start && (isspace_(str[end]) || str[end] == '\n'))
 		end--;
-	}
 
 	for (int i = start; i <= end; i++)
-	{
 		str[i - start] = str[i];
-	}
 
 	str[end - start + 1] = '\0';
 }
@@ -37,27 +31,82 @@ void trim(char *str)
  */
 size_t getline_(shell_info_t *info)
 {
-	while (1)
+	ssize_t maxLength = sizeof(info->line);
+	ssize_t bytesRead = 0;
+	char c;
+	int iseof = 0;
+
+	for (ssize_t i = 0; i < maxLength; i++)
 	{
-		if (fgets(info->line, sizeof(info->line), stdin) == NULL)
+		bytesRead = read(STDIN_FILENO, &c, 1);
+		if (bytesRead == -1)
 		{
-			return (-1);
+			iseof = 1;
 		}
-
-		size_t len = strlen(info->line);
-
-		if (len > 0 && info->line[len - 1] == '\n')
+		else if (bytesRead == 0)
 		{
-			info->line[len - 1] = '\0';
-			return (len);
+			iseof = 1;
+			break;
 		}
-
-		if (info->line[0] == '\0')
+		else if (c == '\n')
 		{
-			return (0);
+			info->line[i] = '\0';
+			break;
 		}
-
-		printf("Read line: %s\n", info->line);
+		else
+			info->line[i] = c;
 	}
 
+	if (iseof)
+		return ((size_t) -1);
+	return (strlen_(info->line));
+}
+
+/**
+ * split_string - Splits a string into tokens.
+ * @str: The string.
+ * @delim: The delimiter.
+ * Return: The tokens.
+ */
+char **split_string(char *str, char *delim)
+{
+	char **tokens = NULL;
+	char *token;
+	int idx = 0;
+
+	token = strtok(str, delim);
+	while (token != NULL)
+	{
+		tokens = realloc_char_ptr(tokens, (idx + 1) * sizeof(char *));
+		if (tokens == NULL)
+		{
+			perror("realloc");
+			exit(EXIT_FAILURE);
+		}
+		tokens[idx] = token;
+		idx++;
+		token = strtok(NULL, delim);
+	}
+	tokens = realloc_char_ptr(tokens, (idx + 1) * sizeof(char *));
+	if (tokens == NULL)
+	{
+		perror("realloc");
+		exit(EXIT_FAILURE);
+	}
+	tokens[idx] = NULL;
+	return (tokens);
+}
+
+/**
+ * strlen_ - Gets the length of a string.
+ * @str: The string.
+ * Return: The length of the string.
+ */
+int strlen_(const char *str)
+{
+	int i = 0;
+
+	while (str[i] != '\0')
+		i++;
+	return (i);
 }

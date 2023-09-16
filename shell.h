@@ -36,8 +36,24 @@ void execute_command(shell_info_t *info);
 
 void shell_loop(shell_info_t *info);
 
+void free_last_command(shell_info_t *pInfo);
+
 /* string.c */
 void trim(char *str);
+char **split_string(char *str, char *delim);
+int strlen_(const char *str);
 
+/* env */
+char *get_env_var(shell_info_t *pInfo, const char *string);
 
+/* path */
+char **get_path_dirs(shell_info_t *info);
+int path_exists(char *path);
+
+/* mem */
+char **realloc_char_ptr(char **ptr, size_t newSize);
+void *memcpy_(void *dest, const void *src, size_t n);
+
+/* utils */
+int isspace_(int c);
 #endif

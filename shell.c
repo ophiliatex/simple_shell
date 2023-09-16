@@ -100,6 +100,7 @@ void shell_loop(shell_info_t *info)
 		if (isatty(STDIN_FILENO))
 		{
 			printf("$ ");
+			fflush(stdout);
 		}
 
 		if (getline_(info) == (size_t) -1)
@@ -108,7 +109,7 @@ void shell_loop(shell_info_t *info)
 		}
 
 		trim(info->line);
-		if (strlen(info->line) == 0)
+		if (strlen_(info->line) == 0)
 		{
 			continue;
 		}
@@ -116,5 +117,18 @@ void shell_loop(shell_info_t *info)
 		parse_line(info);
 
 		execute_command(info);
+
+		free_last_command(info);
 	}
+}
+
+/**
+ * free_last_command - Frees the last command in a shell_info_t struct.
+ * @pInfo: The shell_info_t struct.
+ * Return: Nothing.
+ */
+void free_last_command(shell_info_t *pInfo)
+{
+	free(pInfo->args);
+	pInfo->args = NULL;
 }

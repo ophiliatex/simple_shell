@@ -15,5 +15,7 @@ int main(int argc, char *argv[], char *env[])
 
 	shell_loop(info);
 
+	free_shell_info(info);
+
 	return (0);
 }
