@@ -43,6 +43,11 @@ int handle_inbuilt(shell_info_t *info)
 		return (2);
 	}
 
+	if (handle_env(info) == 1)
+	{
+		return (1);
+	}
+
 	return (0);
 }
 
