@@ -25,8 +25,10 @@ shell_info_t *init_shell_info(char **env, const char *path, int argc,
 	info->line[0] = '\0';
 	info->env = init_list();
 	info->status = 0;
+	info->fp = NULL;
 
-	for (int i = 0; env[i] != NULL; i++) {
+	for (int i = 0; env[i] != NULL; i++)
+	{
 		add_node(info->env, env[i]);
 	}
 
@@ -70,7 +72,6 @@ void free_shell_info(shell_info_t *info)
 void execute_command(shell_info_t *info)
 {
 	pid_t pid;
-	int status;
 
 	pid = fork();
 	if (pid == -1)
@@ -87,14 +88,14 @@ void execute_command(shell_info_t *info)
 	}
 	else
 	{
-		do
-		{
-			if (waitpid(pid, &status, WUNTRACED) == -1)
+		do {
+			if (waitpid(pid, &info->status, WUNTRACED) == -1)
 			{
 				perror("waitpid");
 				exit(EXIT_FAILURE);
 			}
-		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+		} while (!WIFEXITED(info->status) && !WIFSIGNALED(info->status));
+		info->status = WEXITSTATUS(info->status);
 	}
 }
 
@@ -102,7 +103,6 @@ void execute_command(shell_info_t *info)
  * shell_loop - The shell loop.
  * @info: The shell_info_t struct.
  * Return: Nothing.
- * Description: The shell loop.
  */
 void shell_loop(shell_info_t *info)
 {
@@ -127,24 +127,31 @@ void shell_loop(shell_info_t *info)
 
 		parse_line(info);
 
+		int built_in = handle_inbuilt(info);
+
+		if (built_in == 1)
+		{
+			free_last_command(info);
+			continue;
+		}
+		else if (built_in == 2)
+		{
+			free_last_command(info);
+			break;
+		}
+
 		get_path(info);
 
 		handle_cmd(info);
-
 	}
 }
 
-void print_error(shell_info_t *info,int fd, char *message, char *index){
-	printf_(info->argv[0], fd);
-	printf_(": ", fd);
-	printf_(index, fd);
-	printf_(": ", fd);
-	printf_(info->args[0], fd);
-	printf_(": ", fd);
-	printf_(message, fd);
-	printf_("\n", fd);
-}
-
+/**
+ * handle_cmd - Handles a command in a shell_info_t struct.
+ * @info: The shell_info_t struct.
+ * Return: Nothing.
+ * Description: Handles a command in a shell_info_t struct.
+ */
 void handle_cmd(shell_info_t *info)
 {
 	if (info->fp == NULL)
@@ -161,22 +168,3 @@ void handle_cmd(shell_info_t *info)
 	}
 }
 
-/**
- * free_last_command - Frees the last command in a shell_info_t struct.
- * @pInfo: The shell_info_t struct.
- * Return: Nothing.
- */
-void free_last_command(shell_info_t *pInfo)
-{
-	if (pInfo->args != NULL)
-	{
-		free(pInfo->args);
-		pInfo->args = NULL;
-	}
-
-	if (pInfo->fp != NULL)
-	{
-		free(pInfo->fp);
-		pInfo->fp = NULL;
-	}
-}

@@ -9,19 +9,20 @@
 char *get_env_var(shell_info_t *info, char *var)
 {
 	node_t *node = info->env->head;
+
 	while (node != NULL)
 	{
-		if (strncmp(node->data, var, strlen_(var)) == 0)
+		if (strncmp_(node->data, var, strlen_(var)) == 0)
 		{
-			return node->data + strlen_(var) + 1;
+			return (node->data + strlen_(var) + 1);
 		}
 		node = node->next;
 	}
-	return NULL;
+	return (NULL);
 }
 
 /**
- * set_env_var - Sets an environment variable.
+ * set_env - Sets an environment variable.
  * @info: The shell_info_t struct.
  * @var: The name of the environment variable.
  * @value: The value of the environment variable.
@@ -33,14 +34,14 @@ void set_env(shell_info_t *info, char *var, char *value)
 
 	while (node != NULL)
 	{
-		if (strncmp(node->data, var, strlen_(var)) == 0)
+		if (strncmp_(node->data, var, strlen_(var)) == 0)
 		{
 			free(node->data);
 			node->data =
 					malloc(sizeof(char) * (strlen_(var) + strlen_(value) + 2));
-			strcpy(node->data, var);
-			strcat(node->data, "=");
-			strcat(node->data, value);
+			strcpy_(node->data, var);
+			strcat_(node->data, "=");
+			strcat_(node->data, value);
 			return;
 		}
 		node = node->next;
@@ -50,13 +51,13 @@ void set_env(shell_info_t *info, char *var, char *value)
 	free(node->data);
 	node->data = NULL;
 	node->data = malloc(sizeof(char) * (strlen_(var) + strlen_(value) + 2));
-	strcpy(node->data, var);
-	strcat(node->data, "=");
-	strcat(node->data, value);
+	strcpy_(node->data, var);
+	strcat_(node->data, "=");
+	strcat_(node->data, value);
 }
 
 /**
- * unset_env_var - Unsets an environment variable.
+ * unset_env - Unsets an environment variable.
  * @info: The shell_info_t struct.
  * @var: The name of the environment variable.
  * Return: Nothing.
@@ -68,7 +69,7 @@ void unset_env(shell_info_t *info, char *var)
 
 	while (node != NULL)
 	{
-		if (strncmp(node->data, var, strlen_(var)) == 0)
+		if (strncmp_(node->data, var, strlen_(var)) == 0)
 		{
 			if (node == info->env->head)
 			{
@@ -98,7 +99,7 @@ void print_env(shell_info_t *info)
 
 	while (node != NULL)
 	{
-		printf(node->data, STDOUT_FILENO);
+		printf_(node->data, STDOUT_FILENO);
 		printf_("\n", STDOUT_FILENO);
 		node = node->next;
 	}
@@ -113,58 +114,14 @@ int handle_env(shell_info_t *info)
 {
 	int handled = 0;
 
-	if (strcmp(info->args[0], "env") == 0)
-	{
-		print_env(info);
-		if (isatty(STDIN_FILENO))
-		{
-			printf_("$ ", STDOUT_FILENO);
-		}
-		free(info->args);
-		info->args = NULL;
-		return 1;
-	}
+	if (handle_print_env(info) == 1)
+		return (1);
 
-	if (strcmp(info->args[0], "setenv") == 0)
-	{
-		if (info->args[1] == NULL)
-		{
-			printf_("setenv: Too few arguments.\n", STDERR_FILENO);
-			free(info->args);
-			info->args = NULL;
-			return 1;
-		}
-		if (info->args[2] != NULL)
-		{
-			set_env(info, info->args[1], info->args[2]);
-		}
-		if (isatty(STDIN_FILENO))
-		{
-			printf_("$ ", STDOUT_FILENO);
-		}
-		free(info->args);
-		info->args = NULL;
-		return 1;
-	}
+	if (handle_set_env(info) == 1)
+		return (1);
 
-	if (strcmp(info->args[0], "unsetenv") == 0)
-	{
-		if (info->args[1] == NULL)
-		{
-			printf_("unsetenv: Too few arguments.\n", STDERR_FILENO);
-			free(info->args);
-			info->args = NULL;
-			return 1;
-		}
-		unset_env(info, info->args[1]);
-		if (isatty(STDIN_FILENO))
-		{
-			printf_("$ ", STDOUT_FILENO);
-		}
-		free(info->args);
-		info->args = NULL;
-		return 1;
-	}
+	if (handle_unset_env(info) == 1)
+		return (1);
 
-	return handled;
+	return (handled);
 }

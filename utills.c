@@ -47,3 +47,51 @@ int isspace_(int c)
 	}
 	return (0);
 }
+
+/**
+ * atoi_ - Converts a string to an integer.
+ * @str: The string.
+ * Return: The integer.
+ */
+int atoi_(const char *str)
+{
+	int res = 0;
+	int sign = 1;
+	int i = 0;
+
+	if (str[0] == '-')
+	{
+		sign = -1;
+		i++;
+	}
+
+	for (; str[i] != '\0'; ++i)
+	{
+		res = res * 10 + str[i] - '0';
+	}
+
+	return (sign * res);
+}
+
+/**
+ * trim - Trims a string.
+ * @str: The string.
+ * Return: Nothing.
+ * Description: Trims a string.
+ */
+void trim(char *str)
+{
+	int start = 0;
+	int end = (int) strlen_(str) - 1;
+
+	while (isspace_(str[start]))
+		start++;
+
+	while (end >= start && (isspace_(str[end]) || str[end] == '\n'))
+		end--;
+
+	for (int i = start; i <= end; i++)
+		str[i - start] = str[i];
+
+	str[end - start + 1] = '\0';
+}

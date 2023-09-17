@@ -103,3 +103,23 @@ void free_char_ptr(char **ptr)
 
 	free(a);
 }
+
+/**
+ * free_last_command - Frees the last command in a shell_info_t struct.
+ * @pInfo: The shell_info_t struct.
+ * Return: Nothing.
+ */
+void free_last_command(shell_info_t *pInfo)
+{
+	if (pInfo->args != NULL)
+	{
+		free(pInfo->args);
+		pInfo->args = NULL;
+	}
+
+	if (pInfo->fp != NULL)
+	{
+		free(pInfo->fp);
+		pInfo->fp = NULL;
+	}
+}

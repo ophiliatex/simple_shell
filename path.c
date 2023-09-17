@@ -28,6 +28,7 @@ char **get_path_dirs(shell_info_t *info)
 		return (NULL);
 	}
 	char **path_dirs = split_string(path, ":");
+
 	return (path_dirs);
 }
 
@@ -44,7 +45,7 @@ int check_current_dir(shell_info_t *info)
 		if (path_exists(info->args[0]))
 		{
 			info->fp = malloc(sizeof(char) * (strlen_(info->args[0]) + 1));
-			strcpy(info->fp, info->args[0]);
+			strcpy_(info->fp, info->args[0]);
 			return (1);
 		}
 	}
@@ -90,9 +91,9 @@ void check_env_dirs(shell_info_t *info, char **path_dirs)
 	{
 		info->fp = malloc(sizeof(char) *
 						  (strlen_(path_dirs[i]) + strlen_(info->args[0]) + 2));
-		strcpy(info->fp, path_dirs[i]);
-		strcat(info->fp, "/");
-		strcat(info->fp, info->args[0]);
+		strcpy_(info->fp, path_dirs[i]);
+		strcat_(info->fp, "/");
+		strcat_(info->fp, info->args[0]);
 		if (path_exists(info->fp))
 			return;
 		free(info->fp);
