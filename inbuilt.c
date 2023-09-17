@@ -21,7 +21,13 @@ int handle_exit(shell_info_t *info)
 				{
 					fd = STDOUT_FILENO;
 				}
-				print_error(info, fd, "Illegal number: ", info->args[1]);
+				char *msg = malloc(sizeof(char) * (strlen_("Illegal number: ") +
+								   strlen_(info->args[1]) + 1));
+				msg = strcpy_(msg, "Illegal number: ");
+				msg = strcat_(msg, info->args[1]);
+
+				print_error(info, fd, msg , "1");
+				free(msg);
 				info->status = 2;
 			}
 		}
