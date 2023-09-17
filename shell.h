@@ -7,6 +7,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <errno.h>
 
 #define MAXLINE 1024
 
@@ -122,6 +123,13 @@ int handle_exit(shell_info_t *info);
 int handle_print_env(shell_info_t *info);
 int handle_set_env(shell_info_t *info);
 int handle_unset_env(shell_info_t *info);
+
+/* cd */
+int handle_cd_home(shell_info_t *info);
+int handle_cd_back(shell_info_t *info);
+int handle_cd(shell_info_t *info);
+void print_cd_error(const shell_info_t *info, char *msg);
+int check_error(shell_info_t *info);
 
 
 #endif
