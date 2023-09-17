@@ -60,7 +60,7 @@ size_t getline_(shell_info_t *info)
 			iseof = 1;
 			break;
 		}
-		else if (c == '\n')
+		else if (c == '\n' || c == ';')
 		{
 			info->line[i] = '\0';
 			break;
