@@ -63,41 +63,6 @@ size_t getline_(shell_info_t *info)
 }
 
 /**
- * split_string - Splits a string into tokens.
- * @str: The string.
- * @delim: The delimiter.
- * Return: The tokens.
- */
-char **split_string(char *str, char *delim)
-{
-	char **tokens = NULL;
-	char *token;
-	int idx = 0;
-
-	token = strtok(str, delim);
-	while (token != NULL)
-	{
-		tokens = realloc_char_ptr(tokens, (idx + 1) * sizeof(char *));
-		if (tokens == NULL)
-		{
-			perror("realloc");
-			exit(EXIT_FAILURE);
-		}
-		tokens[idx] = token;
-		idx++;
-		token = strtok(NULL, delim);
-	}
-	tokens = realloc_char_ptr(tokens, (idx + 1) * sizeof(char *));
-	if (tokens == NULL)
-	{
-		perror("realloc");
-		exit(EXIT_FAILURE);
-	}
-	tokens[idx] = NULL;
-	return (tokens);
-}
-
-/**
  * strlen_ - Gets the length of a string.
  * @str: The string.
  * Return: The length of the string.

@@ -81,3 +81,25 @@ char *realloc_(char *ptr, size_t newSize, size_t oldSize)
 	free(ptr);
 	return (p);
 }
+
+/**
+ * free_char_ptr - Frees a pointer to a pointer to a char.
+ * @ptr: The pointer to a pointer to a char.
+ * Return: Nothing.
+ */
+void free_char_ptr(char **ptr)
+{
+	char **a = ptr;
+
+	if (!ptr)
+		return;
+	while (*ptr)
+	{
+		char *tmp = *ptr;
+
+		free(tmp);
+		ptr++;
+	}
+
+	free(a);
+}

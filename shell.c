@@ -23,8 +23,14 @@ shell_info_t *init_shell_info(char **env, const char *path, int argc,
 	info->argc = argc;
 	info->argv = argv;
 	info->line[0] = '\0';
-	info->lines = NULL;
-	info->env = env;
+	info->env = init_list();
+	info->status = 0;
+
+	for (int i = 0; env[i] != NULL; i++) {
+		add_node(info->env, env[i]);
+	}
+
+	info->envp = list_to_array(info->env);
 
 	(void) path;
 
@@ -48,6 +54,10 @@ void free_shell_info(shell_info_t *info)
 	{
 		free(info->args);
 	}
+
+	free_char_ptr(info->envp);
+	free_list(info->env);
+	info->env = NULL;
 	info->args = NULL;
 	free(info);
 }
@@ -70,14 +80,15 @@ void execute_command(shell_info_t *info)
 	}
 	if (pid == 0)
 	{
-		if (execve(info->args[0], info->args, info->env) == -1)
+		if (execve(info->args[0], info->args, info->envp) == -1)
 		{
 			exit(EXIT_FAILURE);
 		}
 	}
 	else
 	{
-		do {
+		do
+		{
 			if (waitpid(pid, &status, WUNTRACED) == -1)
 			{
 				perror("waitpid");
@@ -116,8 +127,36 @@ void shell_loop(shell_info_t *info)
 
 		parse_line(info);
 
-		execute_command(info);
+		get_path(info);
 
+		handle_cmd(info);
+
+	}
+}
+
+void print_error(shell_info_t *info,int fd, char *message, char *index){
+	printf_(info->argv[0], fd);
+	printf_(": ", fd);
+	printf_(index, fd);
+	printf_(": ", fd);
+	printf_(info->args[0], fd);
+	printf_(": ", fd);
+	printf_(message, fd);
+	printf_("\n", fd);
+}
+
+void handle_cmd(shell_info_t *info)
+{
+	if (info->fp == NULL)
+	{
+		print_error(info, STDERR_FILENO, "not found", "1");
+		info->status = 127;
+		free_last_command(info);
+	}
+	else
+	{
+		info->args[0] = info->fp;
+		execute_command(info);
 		free_last_command(info);
 	}
 }
@@ -129,6 +168,15 @@ void shell_loop(shell_info_t *info)
  */
 void free_last_command(shell_info_t *pInfo)
 {
-	free(pInfo->args);
-	pInfo->args = NULL;
+	if (pInfo->args != NULL)
+	{
+		free(pInfo->args);
+		pInfo->args = NULL;
+	}
+
+	if (pInfo->fp != NULL)
+	{
+		free(pInfo->fp);
+		pInfo->fp = NULL;
+	}
 }
