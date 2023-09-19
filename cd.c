@@ -7,15 +7,18 @@
  */
 int handle_cd_home(shell_info_t *info)
 {
+	char *home2;
+	char *home;
+
 	if (info->args[1] == NULL)
 	{
-		char *home2 = get_env_var(info, "HOME");
+		home2 = get_env_var(info, "HOME");
 
 		if (home2 == NULL)
 		{
 			home2 = get_env_var(info, "PWD");
 		}
-		char *home = strdup_(home2);
+		home = strdup_(home2);
 
 		if (chdir(home) == -1)
 		{
@@ -45,15 +48,17 @@ int handle_cd_home(shell_info_t *info)
  */
 int handle_cd_back(shell_info_t *info)
 {
+	char *ch;
+	char *oldpwd;
 	if (strcmp_(info->args[1], "-") == 0)
 	{
-		char *ch = get_env_var(info, "OLDPWD");
+		ch = get_env_var(info, "OLDPWD");
 
 		if (ch == NULL)
 		{
 			ch = get_env_var(info, "PWD");
 		}
-		char *oldpwd = strdup_(ch);
+		oldpwd = strdup_(ch);
 
 		if (chdir(oldpwd) == -1)
 		{
@@ -109,7 +114,8 @@ int check_error(shell_info_t *info)
  */
 void print_cd_error(const shell_info_t *info, char *msg)
 {
-	int fd = STDERR_FILENO;
+	int fd;
+	fd= STDERR_FILENO;
 
 	if (isatty(STDIN_FILENO))
 	{
@@ -130,6 +136,8 @@ void print_cd_error(const shell_info_t *info, char *msg)
  */
 int handle_cd(shell_info_t *info)
 {
+	char *msg;
+
 	if (info == NULL)
 	{
 		return (0);
@@ -153,7 +161,7 @@ int handle_cd(shell_info_t *info)
 			{
 				fd = STDOUT_FILENO;
 			}
-			char *msg = malloc(sizeof(char) * (strlen_("can't cd to ") +
+			msg = malloc(sizeof(char) * (strlen_("can't cd to ") +
 											   strlen_(info->args[1]) + 1));
 
 			msg = strcpy_(msg, "can't cd to ");
