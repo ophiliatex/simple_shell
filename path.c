@@ -21,13 +21,14 @@ int path_exists(char *path)
 char **get_path_dirs(shell_info_t *info)
 {
 	char *path = get_env_var(info, "PATH");
+	char **path_dirs;
 
 
 	if (path == NULL)
 	{
 		return (NULL);
 	}
-	char **path_dirs = split_string(path, ":");
+	path_dirs = split_string(path, ":");
 
 	return (path_dirs);
 }
@@ -59,6 +60,8 @@ int check_current_dir(shell_info_t *info)
  */
 void get_path(shell_info_t *info)
 {
+	char **path_dirs;
+
 	info->fp = NULL;
 
 	if (info == NULL)
@@ -67,7 +70,7 @@ void get_path(shell_info_t *info)
 	if (check_current_dir(info) == 1)
 		return;
 
-	char **path_dirs = get_path_dirs(info);
+	path_dirs = get_path_dirs(info);
 
 	if (path_dirs == NULL)
 	{
@@ -87,7 +90,9 @@ void get_path(shell_info_t *info)
  */
 void check_env_dirs(shell_info_t *info, char **path_dirs)
 {
-	for (int i = 0; path_dirs[i] != NULL; i++)
+	int i;
+
+	for (i = 0; path_dirs[i] != NULL; i++)
 	{
 		info->fp = malloc(sizeof(char) *
 						  (strlen_(path_dirs[i]) + strlen_(info->args[0]) + 2));

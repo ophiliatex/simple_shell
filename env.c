@@ -8,8 +8,9 @@
  */
 char *get_env_var(shell_info_t *info, char *var)
 {
-	node_t *node = info->env->head;
+	node_t *node;
 
+	node = info->env->head;
 	while (node != NULL)
 	{
 		if (strncmp_(node->data, var, strlen_(var)) == 0)

@@ -81,6 +81,7 @@ int atoi_(const char *str)
  */
 void trim(char *str)
 {
+	int i;
 	int start = 0;
 	int end = (int) strlen_(str) - 1;
 
@@ -90,7 +91,7 @@ void trim(char *str)
 	while (end >= start && (isspace_(str[end]) || str[end] == '\n'))
 		end--;
 
-	for (int i = start; i <= end; i++)
+	for (i = start; i <= end; i++)
 		str[i - start] = str[i];
 
 	str[end - start + 1] = '\0';

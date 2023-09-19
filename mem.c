@@ -11,8 +11,9 @@ void *memcpy_(void *dest, const void *src, size_t n)
 {
 	char *csrc = (char *) src;
 	char *cdest = (char *) dest;
+	size_t i;
 
-	for (size_t i = 0; i < n; i++)
+	for (i = 0; i < n; i++)
 	{
 		cdest[i] = csrc[i];
 	}

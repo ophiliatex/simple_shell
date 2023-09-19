@@ -8,6 +8,9 @@
  */
 int handle_exit(shell_info_t *info)
 {
+	int fd;
+	char *msg;
+
 	if (strcmp_(info->line, "exit") == 0)
 	{
 		if (info->args[1] != NULL)
@@ -15,14 +18,13 @@ int handle_exit(shell_info_t *info)
 			info->status = atoi_(info->args[1]);
 			if (info->status < 0 || isint(info->args[1]) == 0)
 			{
-				int fd = STDERR_FILENO;
-
+				fd = STDERR_FILENO;
 				if (isatty(STDIN_FILENO))
 				{
 					fd = STDOUT_FILENO;
 				}
-				char *msg = malloc(sizeof(char) * (strlen_("Illegal number: ") +
-												   strlen_(info->args[1]) + 1));
+				msg = malloc(sizeof(char) * (strlen_("Illegal number: ") +
+											 strlen_(info->args[1]) + 1));
 				msg = strcpy_(msg, "Illegal number: ");
 				msg = strcat_(msg, info->args[1]);
 				print_error(info, fd, msg, "1");
@@ -68,19 +70,22 @@ int handle_inbuilt(shell_info_t *info)
  */
 int isint(const char *string)
 {
+	int isneg;
+	int i;
+
 	if (string == NULL)
 	{
 		return (0);
 	}
 
-	int isneg = 0;
+	isneg = 0;
 
 	if (string[0] == '-')
 	{
 		isneg = 1;
 	}
 
-	for (int i = isneg; string[i] != '\0'; i++)
+	for (i = isneg; string[i] != '\0'; i++)
 	{
 		if (string[i] < '0' || string[i] > '9')
 		{

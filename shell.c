@@ -12,6 +12,7 @@
 shell_info_t *init_shell_info(char **env, const char *path, int argc,
 							  char **argv)
 {
+	int i;
 	shell_info_t *info = malloc(sizeof(shell_info_t));
 
 	if (info == NULL)
@@ -27,7 +28,8 @@ shell_info_t *init_shell_info(char **env, const char *path, int argc,
 	info->status = 0;
 	info->fp = NULL;
 
-	for (int i = 0; env[i] != NULL; i++)
+
+	for (i = 0; env[i] != NULL; i++)
 	{
 		add_node(info->env, env[i]);
 	}
@@ -106,6 +108,8 @@ void execute_command(shell_info_t *info)
  */
 void shell_loop(shell_info_t *info)
 {
+	int built_in;
+
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
@@ -113,7 +117,6 @@ void shell_loop(shell_info_t *info)
 			printf("$ ");
 			fflush(stdout);
 		}
-
 		if (getline_(info) == (size_t) -1)
 		{
 			break;
@@ -127,7 +130,8 @@ void shell_loop(shell_info_t *info)
 
 		parse_line(info);
 
-		int built_in = handle_inbuilt(info);
+
+		built_in = handle_inbuilt(info);
 
 		if (built_in == 1)
 		{

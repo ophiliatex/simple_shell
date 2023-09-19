@@ -47,8 +47,9 @@ size_t getline_(shell_info_t *info)
 	ssize_t bytesRead = 0;
 	char c;
 	int iseof = 0;
+	ssize_t i;
 
-	for (ssize_t i = 0; i < maxLength; i++)
+	for (i = 0; i < maxLength; i++)
 	{
 		bytesRead = read(STDIN_FILENO, &c, 1);
 		if (bytesRead == -1)

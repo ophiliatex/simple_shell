@@ -2,21 +2,32 @@
 #define SIMPLE_SHELL_SHELL_H
 
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <errno.h>
 
 #define MAXLINE 1024
 
+/**
+ * struct node - Struct for a node
+ * @data: The data
+ * @next: The next node
+ */
 typedef struct node
 {
 	char *data;
 	struct node *next;
 } node_t;
 
+/**
+ * struct list - Struct for a list
+ * @head: The head of the list
+ * @tail: The tail of the list
+ * @size: The size of the list
+ */
 typedef struct list
 {
 	node_t *head;
@@ -25,7 +36,15 @@ typedef struct list
 } list_t;
 
 /**
- * A shell_info_t struct contains information about the shell.
+ * struct shell_info - Struct for shell info
+ * @argc: The number of arguments
+ * @argv: The arguments
+ * @line: The line
+ * @args: The arguments
+ * @envp: The environment variables
+ * @fp: The file pointer
+ * @env: The environment variables
+ * @status: The status
  */
 typedef struct shell_info
 {
@@ -80,7 +99,7 @@ char *strdup_(const char *s);
 char *itoa_(int num);
 int atoi_(const char *str);
 
-void print_error(shell_info_t *info,int fd, char *message, char *index);
+void print_error(shell_info_t *info, int fd, char *message, char *index);
 
 
 /* env */

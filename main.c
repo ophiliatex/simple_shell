@@ -12,10 +12,11 @@
 int main(int argc, char *argv[], char *env[])
 {
 	shell_info_t *info = init_shell_info(env, argv[0], argc, argv);
+	int status;
 
 	shell_loop(info);
 
-	int status = info->status;
+	status = info->status;
 
 	free_shell_info(info);
 

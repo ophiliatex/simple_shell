@@ -9,6 +9,7 @@ int handle_cd_home(shell_info_t *info)
 {
 	char *home2;
 	char *home;
+	int fd;
 
 	if (info->args[1] == NULL)
 	{
@@ -22,8 +23,7 @@ int handle_cd_home(shell_info_t *info)
 
 		if (chdir(home) == -1)
 		{
-			int fd = STDERR_FILENO;
-
+			fd = STDERR_FILENO;
 			if (isatty(STDIN_FILENO))
 			{
 				fd = STDOUT_FILENO;
@@ -50,6 +50,7 @@ int handle_cd_back(shell_info_t *info)
 {
 	char *ch;
 	char *oldpwd;
+
 	if (strcmp_(info->args[1], "-") == 0)
 	{
 		ch = get_env_var(info, "OLDPWD");
@@ -115,7 +116,8 @@ int check_error(shell_info_t *info)
 void print_cd_error(const shell_info_t *info, char *msg)
 {
 	int fd;
-	fd= STDERR_FILENO;
+
+	fd = STDERR_FILENO;
 
 	if (isatty(STDIN_FILENO))
 	{
@@ -137,12 +139,12 @@ void print_cd_error(const shell_info_t *info, char *msg)
 int handle_cd(shell_info_t *info)
 {
 	char *msg;
+	int fd;
 
 	if (info == NULL)
 	{
 		return (0);
 	}
-
 	if (strcmp_(info->args[0], "cd") == 0)
 	{
 		if (handle_cd_home(info) == 1)
@@ -155,15 +157,13 @@ int handle_cd(shell_info_t *info)
 		}
 		if (chdir(info->args[1]) == -1)
 		{
-			int fd = STDERR_FILENO;
-
+			fd = STDERR_FILENO;
 			if (isatty(STDIN_FILENO))
 			{
 				fd = STDOUT_FILENO;
 			}
 			msg = malloc(sizeof(char) * (strlen_("can't cd to ") +
-											   strlen_(info->args[1]) + 1));
-
+										 strlen_(info->args[1]) + 1));
 			msg = strcpy_(msg, "can't cd to ");
 			msg = strcat_(msg, info->args[1]);
 			print_error(info, fd, msg, "1");
