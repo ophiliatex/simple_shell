@@ -121,7 +121,7 @@ void shell_loop(shell_info_t *info)
 		{
 			break;
 		}
-
+		ignore_comments(info->line);
 		trim(info->line);
 		if (strlen_(info->line) == 0)
 		{
@@ -129,8 +129,6 @@ void shell_loop(shell_info_t *info)
 		}
 
 		parse_line(info);
-
-
 		built_in = handle_inbuilt(info);
 
 		if (built_in == 1)

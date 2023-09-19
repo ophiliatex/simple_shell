@@ -129,6 +129,7 @@ void free_char_ptr(char **ptr);
 
 /* utils */
 int isspace_(int c);
+void ignore_comments(char *str);
 
 /* io */
 void printf_(char *str, int fd);

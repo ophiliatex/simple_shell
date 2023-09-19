@@ -96,3 +96,26 @@ void trim(char *str)
 
 	str[end - start + 1] = '\0';
 }
+
+/**
+ * ignore_comments - Ignores comments in a string.
+ * @str: The string.
+ * Return: Nothing.
+ */
+void ignore_comments(char *str)
+{
+	int i = 0;
+
+	while (str[i] != '\0')
+	{
+		if (str[i] == '#')
+		{
+			if (i == 0 || isspace_(str[i - 1]))
+			{
+				str[i] = '\0';
+				break;
+			}
+		}
+		i++;
+	}
+}
