@@ -7,4 +7,5 @@ the name of the program is equivalent to argv[0] of this program.
 There is a limited list of allowed functions and system calls
 hence some goto ones were not used as one would expect
 The shell is compiled this way: gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
+Try it out
 
